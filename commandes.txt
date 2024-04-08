@@ -1,0 +1,5 @@
+git pull
+# Faire ses changements
+git add -u
+git commit -m "texte"
+git push -u origin main
