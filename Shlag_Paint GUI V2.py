@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Mar 26 18:16:19 2024
-
-@author: sylva
-"""
-
 import tkinter as tk
 import numpy as np
 
@@ -210,6 +203,7 @@ class Paint(tk.Tk):
             
             #newversion (editing img var)
             modify_picture.modify_picture(self.picture['img'], (0,0,0), event.x, event.y, cursize, self.CanvaWidth, self.CanvaHeight)
+            
             
             ## old :
                 
