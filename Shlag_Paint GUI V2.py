@@ -1,9 +1,11 @@
 import tkinter as tk
+from tkinter import filedialog
 import numpy as np
 from PIL import Image, ImageTk
 
 import render_color
 import modify_picture
+import ascii_art
 
 class Paint(tk.Tk):
     
@@ -44,8 +46,9 @@ class Paint(tk.Tk):
 
         options = tk.Menu(menubar, tearoff = 0)
         options.add_command(label="New",command=self.newpic)
-        options.add_command(label="Load")
-        options.add_command(label="Save")
+        options.add_command(label="Load",command=self.loadpic)
+        options.add_command(label="Save as",command=self.savepicas)
+        options.add_command(label="Save",command=self.savepic)
         options.add_separator()
         options.add_command(label="Exit", command=self.destroy)
         menubar.add_cascade(label="File", menu=options)
@@ -55,7 +58,7 @@ class Paint(tk.Tk):
         editMenu.add_command(label="Redo")
         editMenu.add_command(label="Clear", command=self.clearcanva)
         editMenu.add_separator()
-        editMenu.add_command(label="Convert ASCII into art")
+        editMenu.add_command(label="Convert ASCII into art", command=self.convertASCII)
         menubar.add_cascade(label="Edit", menu=editMenu)
         
         self.config(menu = menubar)
@@ -106,12 +109,13 @@ class Paint(tk.Tk):
         self.canva.place(x=290,y=120)
     
     #======================Bind Init func=========================#
-    
+
     #Main window
     def resize(self,event):
         if event.widget == self:
             width=self.winfo_width() -310
             height=self.winfo_height() -140
+            """
             if self.width != width or self.height!=height :
                 if width >= height :
                     self.canva["width"]=height
@@ -119,7 +123,8 @@ class Paint(tk.Tk):
                 else :
                     self.canva["width"]=width
                     self.canva["height"]=width
-                    
+            """
+                      
             self.width = width
             self.height = height
     
@@ -127,9 +132,35 @@ class Paint(tk.Tk):
     def newpic(self):
         newpic = Newpic(self)
         newpic.grab_set()
+
+    def loadpic(self):
+        self.filename=filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("jpg files","*.jpg"),("png files","*.png"),("all files","*.*")))
+        self.picture['img']= Image.open(self.filename)
+
+        self.CanvaWidth, self.CanvaHeight = self.picture['img'].size
+        self.canva["width"]=self.CanvaWidth
+        self.canva["height"]=self.CanvaHeight
+
+        self.filename=self.filename[:-4]
+
+        self.refresh()
+
+    def savepicas(self):
+        self.filename=filedialog.asksaveasfilename(initialdir = "/",title = "Select folder",filetypes = (("jpg files","*.jpg"),("all files","*.*")))
+        self.picture['img'].save(self.filename+".jpg")
+
+    def savepic(self):
+        try :
+            self.picture['img'].save(self.filename+".jpg")
+        except : 
+            self.filename=filedialog.asksaveasfilename(initialdir = "/",title = "Select folder",filetypes = (("jpg files","*.jpg"),("all files","*.*")))
+            self.picture['img'].save(self.filename+".jpg")
     
     def clearcanva(self):
         self.canva.delete("all")
+
+    def convertASCII(self, event):
+        pass
     
     #Color canva
     def selectcolor(self,event):
@@ -168,6 +199,16 @@ class Paint(tk.Tk):
         self.colorCanva["bg"]=self.color
     
     #Main canva
+    def refresh(self):
+        img_tk=ImageTk.PhotoImage(self.picture['img'])
+        x=int(self.CanvaWidth/2)
+        y=int(self.CanvaHeight/2)
+
+        self.canva.create_image(x,y,image=img_tk)
+        self.canva.image=img_tk
+         #display img in canva <----------------------------------------------------------------
+
+
     def cursormove(self,event):
         if self.actualtool=="pen":
             cursize = int(self.pensize.get()/2)
@@ -195,13 +236,9 @@ class Paint(tk.Tk):
             #create shape at cursor
             cursize = int(self.pensize.get()/2)
             
-            ##newversion (editing img var)
             self.picture['img']=modify_picture.modify_picture(self.picture['img'], self.RGB, event.x, event.y, cursize, self.CanvaWidth, self.CanvaHeight)
+            self.refresh()
             
-            self.canva.image=ImageTk.PhotoImage(self.picture['img']) #<----------------------------last edit
-            
-            ##old :
-            #self.canva.create_oval(event.x-cursize, event.y-cursize,event.x+cursize,event.y+cursize,fill=self.color,outline=self.color)
         
         
     def erase(self,event):
@@ -210,9 +247,8 @@ class Paint(tk.Tk):
             
             #newversion (editing img var)
             self.picture['img']=modify_picture.modify_picture(self.picture['img'], (0,0,0), event.x, event.y, cursize, self.CanvaWidth, self.CanvaHeight)
-            
-            self.canva.image=ImageTk.PhotoImage(self.picture['img']) #<----------------------------last edit
-            
+            self.refresh()
+
             ## old :
                
             #delete all others shapes
@@ -224,18 +260,23 @@ class Paint(tk.Tk):
             #for id in ids :
             #    self.canva.delete(id)
         
-        #create cursor
-        self.cursor[f"id{self.cursorCount}"] =self.canva.create_oval(event.x-cursize, event.y-cursize,event.x+cursize,event.y+cursize,outline="black")
-        
-        #remove old cursor
-        try : self.canva.delete(self.cursor[f"id{self.cursorCount-1}"])
-        except : KeyError
-        self.cursorCount+=1
-    
+            #create cursor
+            self.cursor[f"id{self.cursorCount}"] =self.canva.create_oval(event.x-cursize, event.y-cursize,event.x+cursize,event.y+cursize,outline="black")
+            
+            #remove old cursor
+            try : self.canva.delete(self.cursor[f"id{self.cursorCount-1}"])
+            except : KeyError
+            self.cursorCount+=1
+
     #Main canva ---> fill
     def filltool(self, event):
         if self.actualtool!="fill":
-            pass
+            self.actualtool="fill"
+        
+    def fill(self,event):
+        pass
+        self.refresh()
+
         
 #=============================pop up=========================#
 
@@ -285,6 +326,6 @@ class Newpic(tk.Toplevel):
         self.parent.canva.delete("all")
         self.destroy()
         
-          
+
 app = Paint()
 app.mainloop()

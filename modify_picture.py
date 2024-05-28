@@ -1,19 +1,9 @@
 import numpy as np
+from PIL import Image, ImageTk
 
 def sqrt(x): 
     return x**(1/2)
-
-def create_img(height,width):
-    height=int(height)
-    width=int(width)
-    
-    img=[]
-    for i in range(0,height+1):
-        img.append([])
-        for j in range(0,width+1):
-            img[i].append(tuple((0,0,0)))
             
-    return np.array(img)
 
 def modify_picture(img,color,x,y,pensize,canvawidth,canvaheight):
     """
@@ -28,6 +18,7 @@ def modify_picture(img,color,x,y,pensize,canvawidth,canvaheight):
     ----------
     return: img modified (array)
     """
+    pixels = img.load()
     
     canvaheight=int(canvaheight)
     canvawidth=int(canvawidth)
@@ -82,6 +73,7 @@ def modify_picture(img,color,x,y,pensize,canvawidth,canvaheight):
 
     
     #===========modification of img object
+
     for i in range (Ymin,Ymax+1):
         for j in range(Xmin,Xmax+1):
             
@@ -99,17 +91,32 @@ def modify_picture(img,color,x,y,pensize,canvawidth,canvaheight):
                         dist_from_center = sqrt((pensize-(i-Ymin))**2+(j-Xmin-pensize)**2)
                     else :
                         dist_from_center = sqrt((pensize-(i-Ymin))**2+(pensize-(j-Xmin))**2)
-                
-                    
+            
+            
             #replace color if in range
             if dist_from_center < pensize or x==j and y==i:
-                img[i][j]=color
+                pixels[i,j]=color
+            
+    return img
                 
-
-#test function :
 """
-xlen=9
-ylen=9 
+#test function :
+xlen=300
+ylen=300
+
+img= Image.new('RGB', (xlen, ylen))      
+  
+img = modify_picture(img, (128,0,128), 150,150, 50, xlen, ylen)
+img.save("test_image.png")
+
+import tkinter as tk
+
+root = tk.Tk()
+root.geometry('600x600')
+
+canvas1 = tk.Canvas( root, width = 400, height = 400, bg="gray") 
+canvas1.pack() 
+
 
 def render_img(img,xlen=xlen,ylen=ylen):
     for i in range(0,xlen+1):
@@ -119,54 +126,12 @@ def render_img(img,xlen=xlen,ylen=ylen):
                 print(f"{img[i][j][l]}",end="")
             print(end=" |")
         print(" ]")
-            
-    
-img= create_img(xlen, ylen)       
-render_img(img)    
+   
 
-print()
-modify_picture(img, (1,1,1), 9, 9, 5, xlen, ylen)
-render_img(img)    
+# Display image 
+img_tk = ImageTk.PhotoImage(img)
+canvas1.create_image(150,150,image=img_tk)
+canvas1.image = img_tk
+
+root.mainloop()
 """
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
