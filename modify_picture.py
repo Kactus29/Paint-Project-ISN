@@ -107,7 +107,7 @@ def modify_picture(img,color,x,y,pensize,canvawidth,canvaheight):
                 
 
 #test function :
-
+"""
 xlen=9
 ylen=9 
 
@@ -127,7 +127,7 @@ render_img(img)
 print()
 modify_picture(img, (1,1,1), 9, 9, 5, xlen, ylen)
 render_img(img)    
-
+"""
     
     
 
