@@ -1,5 +1,6 @@
 import tkinter as tk
 import numpy as np
+from PIL import Image, ImageTk
 
 import render_color
 import modify_picture
@@ -34,7 +35,7 @@ class Paint(tk.Tk):
         self.CanvaHeight=420
         self.actualtool="pen"
         
-        self.picture={'height':420,'width':420,'img':np.array(modify_picture.create_img(self.CanvaHeight, self.CanvaHeight))}
+        self.picture={'height':420,'width':420,'img': Image.new('RGB',(self.CanvaHeight, self.CanvaHeight))} #<----------------------------last edit
     
     #widget#
     def initwidget(self):
@@ -88,6 +89,10 @@ class Paint(tk.Tk):
         
         #main canva
         self.canva=tk.Canvas(self,bg="white",width=self.CanvaWidth,height=self.CanvaHeight)
+        
+        self.canva.create_image(self.CanvaWidth,self.CanvaHeight,image=ImageTk.PhotoImage(self.picture['img'])) #<----------------------------last edit
+        self.canva.image=ImageTk.PhotoImage(self.picture['img']) #<----------------------------last edit
+        
         self.canva.bind('<Motion>',self.cursormove) #The mouse is moved, with mouse button 1 being held down (use B2 for the middle button, B3 for the right button).
         self.canva.bind('<Leave>',self.cursorquit) #The mouse pointer left the widget.
         self.canva.bind('<B1-Motion>',self.trace)
@@ -191,10 +196,12 @@ class Paint(tk.Tk):
             cursize = int(self.pensize.get()/2)
             
             ##newversion (editing img var)
-            modify_picture.modify_picture(self.picture['img'], self.RGB, event.x, event.y, cursize, self.CanvaWidth, self.CanvaHeight)
+            self.picture['img']=modify_picture.modify_picture(self.picture['img'], self.RGB, event.x, event.y, cursize, self.CanvaWidth, self.CanvaHeight)
+            
+            self.canva.image=ImageTk.PhotoImage(self.picture['img']) #<----------------------------last edit
             
             ##old :
-            self.canva.create_oval(event.x-cursize, event.y-cursize,event.x+cursize,event.y+cursize,fill=self.color,outline=self.color)
+            #self.canva.create_oval(event.x-cursize, event.y-cursize,event.x+cursize,event.y+cursize,fill=self.color,outline=self.color)
         
         
     def erase(self,event):
@@ -202,19 +209,20 @@ class Paint(tk.Tk):
             cursize = int(self.pensize.get()/2)
             
             #newversion (editing img var)
-            modify_picture.modify_picture(self.picture['img'], (0,0,0), event.x, event.y, cursize, self.CanvaWidth, self.CanvaHeight)
+            self.picture['img']=modify_picture.modify_picture(self.picture['img'], (0,0,0), event.x, event.y, cursize, self.CanvaWidth, self.CanvaHeight)
             
+            self.canva.image=ImageTk.PhotoImage(self.picture['img']) #<----------------------------last edit
             
             ## old :
-                
+               
             #delete all others shapes
-            ids_square = self.canva.find_overlapping(event.x-int(3/4*cursize), event.y-int(3/4*cursize), event.x+int(3/4*cursize), event.y+int(3/4*cursize))
-            ids_vertical = self.canva.find_overlapping(event.x-int(3/16*cursize), event.y-cursize, event.x+int(3/16*cursize), event.y+cursize)
-            ids_horizontal = self.canva.find_overlapping(event.x-cursize, event.y-int(3/8*cursize), event.x+cursize, event.y+int(3/8*cursize))
-            ids=tuple(set(ids_square + ids_vertical + ids_horizontal))
+            #ids_square = self.canva.find_overlapping(event.x-int(3/4*cursize), event.y-int(3/4*cursize), event.x+int(3/4*cursize), event.y+int(3/4*cursize))
+            #ids_vertical = self.canva.find_overlapping(event.x-int(3/16*cursize), event.y-cursize, event.x+int(3/16*cursize), event.y+cursize)
+            #ids_horizontal = self.canva.find_overlapping(event.x-cursize, event.y-int(3/8*cursize), event.x+cursize, event.y+int(3/8*cursize))
+            #ids=tuple(set(ids_square + ids_vertical + ids_horizontal))
 
-        for id in ids :
-            self.canva.delete(id)
+            #for id in ids :
+            #    self.canva.delete(id)
         
         #create cursor
         self.cursor[f"id{self.cursorCount}"] =self.canva.create_oval(event.x-cursize, event.y-cursize,event.x+cursize,event.y+cursize,outline="black")
@@ -272,7 +280,7 @@ class Newpic(tk.Toplevel):
         self.parent.CanvaHeight=self.EntHeight.get()
         self.parent.canva["width"]=self.parent.CanvaWidth
         self.parent.canva["height"]=self.parent.CanvaHeight
-        self.parent.picture={'height':self.parent.CanvaHeight,'width':self.parent.CanvaWidth,'img':np.array(modify_picture.create_img(self.parent.CanvaHeight, self.parent.CanvaHeight))}
+        self.parent.picture={'height':self.parent.CanvaHeight,'width':self.parent.CanvaWidth,'img': Image.new('RGB',(self.parent.CanvaHeight, self.parent.CanvaHeight))} #<----------------------------last edit
         #to replace by destroying the matrice in the future
         self.parent.canva.delete("all")
         self.destroy()
