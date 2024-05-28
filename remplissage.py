@@ -81,18 +81,22 @@ from PIL import Image, ImageDraw
 
 def flood_fill(edges, x, y):
     """
-    Description : Prends en entrée une image edge detectionée et des coordonées initiales.
-                  Renvoie une liste de tuples contenant les pixels à colorer
+    Description : Prend en entrée une image edge detectée et des coordonnées initiales.
+                  Renvoie une image PIL avec le remplissage effectué.
 
     Inputs : - edges (Image) : l'image binarisée avec un edge detection
-             - x (int) : La cordonée en x du point de départ
-             - y (int) : La cordonée en x du point de départ
+             - x (int) : La coordonnée x du point de départ
+             - y (int) : La coordonnée y du point de départ
 
-    Output : - liste_pixels_a_remplir (liste) : une liste des pixels qui doivent être remplis
+    Output : - filled_img (Image) : l'image avec le remplissage effectué
     """
     width, height = edges.size
     visited = set()
     stack = [(x, y)]
+
+    # Créer une copie de l'image pour effectuer le remplissage
+    filled_img = edges.copy()
+    draw = ImageDraw.Draw(filled_img)
 
     while stack:
         x, y = stack.pop()
@@ -103,23 +107,8 @@ def flood_fill(edges, x, y):
         visited.add((x, y))
 
         if 0 <= x < width and 0 <= y < height and edges.getpixel((x, y)) == 0:
-            edges.putpixel((x, y), 255)  # Mettre à jour la couleur du pixel
+            draw.point((x, y), fill=255)  # Remplir le pixel
             stack.extend([(x+1, y), (x-1, y), (x, y+1), (x, y-1)])
 
-    return list(visited)
+    return filled_img
 
-
-def colorie_pixels(image, liste_pixels, couleur):
-    """
-    Description : Prends en entrée une image, la liste des pixels à colorier ainsi que la couleur.
-                  Colorie les pixels de la liste des pixels de la couleur indiquée
-
-    Inputs : - image (Image) : l'image
-             - liste_pixels (liste) : Une liste de tuples contenant des coordonées de pixels à colorer
-             - couleur (tuple) : Une tuple contenant le code rgb d'une couleur (ex : (120, 205, 117))
-
-    Output : Ne renvoie rien, modifie l'image directement
-    """
-    draw = ImageDraw.Draw(image)
-    for x, y in liste_pixels:
-        draw.point((x, y), fill=couleur)
