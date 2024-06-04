@@ -1,3 +1,9 @@
+def HexToDec(hex):
+    hex=hex[1:]
+    R,G,B=hex[0:2],hex[2:4],hex[4:6]
+    return (int(R,16),int(G,16),int(B,16))
+
+"""
 conversion_table = {0: '0', 1: '1', 2: '2', 3: '3', 4: '4', 
             5: '5', 6: '6', 7: '7', 
             8: '8', 9: '9', 10: 'A', 11: 'B', 12: 'C', 
@@ -28,4 +34,4 @@ def render_color_dechex(R,G,B,factor) :
 
 def renderLabel(color):
     return f"#{color}"
-
+"""

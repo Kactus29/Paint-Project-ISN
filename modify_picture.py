@@ -104,7 +104,7 @@ def modify_picture(img,color,x,y,pensize,canvawidth,canvaheight):
 xlen=300
 ylen=300
 
-img= Image.new('RGB', (xlen, ylen))      
+img= Image.new('RGB', (xlen, ylen),(255,255,255))      
   
 img = modify_picture(img, (128,0,128), 150,150, 50, xlen, ylen)
 img.save("test_image.png")

@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, colorchooser
 import numpy as np
 from PIL import Image, ImageTk
 
@@ -29,15 +29,12 @@ class Paint(tk.Tk):
     #var#
     def initvar(self):
         self.pensize=tk.DoubleVar()
-        self.color="000000"
-        self.RGB=(0,0,0)
+        self.color=(0,0,0)
         self.cursor={}
         self.cursorCount = 0
-        self.CanvaWidth=420
-        self.CanvaHeight=420
         self.actualtool="pen"
         
-        self.picture={'height':420,'width':420,'img': Image.new('RGB',(self.CanvaHeight, self.CanvaHeight))} #<----------------------------last edit
+        self.picture={'height':420,'width':420,'img': Image.new('RGB',(420, 420),(255,255,255))} #<----------------------------last edit
     
     #widget#
     def initwidget(self):
@@ -81,19 +78,25 @@ class Paint(tk.Tk):
         self.fillB.place(x=60,y=20)
 
         #color canva
-        self.colorL = tk.Label(self,text=render_color.renderLabel(self.color))
+        self.colorL = tk.Label(self,text='#000000')
         self.colorL.place(x=20,y=90)
         
+        self.colorB = tk.Button(self,text="C",bg="lightgrey",fg='black', width=3,height=1)
+        self.colorB.bind('<Button-1>',self.selectcolor)
+        self.colorB.place(x=450,y=20)
+
+        """old
         self.colorCanva=tk.Canvas(self,width=252,height=252,bg="white") #color render to define
         self.colorCanva.bind('<Button-1>',self.selectcolor)
         self.colorCanva.bind('<B1-Motion>',self.selectcolor)
         self.colorCanva.bind('<ButtonRelease-1>',self.selectcolor)
         self.colorCanva.place(x=20,y=120)
-        
+        """
+
         #main canva
-        self.canva=tk.Canvas(self,bg="white",width=self.CanvaWidth,height=self.CanvaHeight)
+        self.canva=tk.Canvas(self,bg="white",width=self.picture['width'],height=self.picture['height'])
         
-        self.canva.create_image(self.CanvaWidth,self.CanvaHeight,image=ImageTk.PhotoImage(self.picture['img'])) #<----------------------------last edit
+        self.canva.create_image(self.picture['width'],self.picture['height'],image=ImageTk.PhotoImage(self.picture['img'])) #<----------------------------last edit
         self.canva.image=ImageTk.PhotoImage(self.picture['img']) #<----------------------------last edit
         
         self.canva.bind('<Motion>',self.cursormove) #The mouse is moved, with mouse button 1 being held down (use B2 for the middle button, B3 for the right button).
@@ -137,9 +140,9 @@ class Paint(tk.Tk):
         self.filename=filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("jpg files","*.jpg"),("png files","*.png"),("all files","*.*")))
         self.picture['img']= Image.open(self.filename)
 
-        self.CanvaWidth, self.CanvaHeight = self.picture['img'].size
-        self.canva["width"]=self.CanvaWidth
-        self.canva["height"]=self.CanvaHeight
+        self.picture['width'], self.picture['height'] = self.picture['img'].size
+        self.canva["width"]=self.picture['width']
+        self.canva["height"]=self.picture['height']
 
         self.filename=self.filename[:-4]
 
@@ -163,6 +166,13 @@ class Paint(tk.Tk):
         pass
     
     #Color canva
+    def selectcolor(self,event):
+        color = colorchooser.askcolor()[1]  # Retourne un tuple (couleur sélectionnée, code hexadécimal)
+        if color:
+            self.color = render_color.HexToDec(color)
+            self.colorL["text"]= color
+
+    """ old
     def selectcolor(self,event):
         x=event.x
         y=event.y
@@ -193,20 +203,22 @@ class Paint(tk.Tk):
         G=render_color.factorize(G,factor)
         B=render_color.factorize(B,factor)
         
+
         self.RGB=(R,G,B)
         self.color= render_color.render_color_dechex(R,G,B,factor)
-        self.colorL["text"]= self.color
+
         self.colorCanva["bg"]=self.color
-    
+    """
+        
+        
     #Main canva
     def refresh(self):
         img_tk=ImageTk.PhotoImage(self.picture['img'])
-        x=int(self.CanvaWidth/2)
-        y=int(self.CanvaHeight/2)
+        x=int(self.picture['width']/2)
+        y=int(self.picture['height']/2)
 
         self.canva.create_image(x,y,image=img_tk)
         self.canva.image=img_tk
-         #display img in canva <----------------------------------------------------------------
 
 
     def cursormove(self,event):
@@ -236,7 +248,7 @@ class Paint(tk.Tk):
             #create shape at cursor
             cursize = int(self.pensize.get()/2)
             
-            self.picture['img']=modify_picture.modify_picture(self.picture['img'], self.RGB, event.y, event.x, cursize, self.CanvaWidth, self.CanvaHeight)
+            self.picture['img']=modify_picture.modify_picture(self.picture['img'], self.color, event.y, event.x, cursize, self.picture['width'], self.picture['height'])
             self.refresh()
             
         
@@ -246,7 +258,7 @@ class Paint(tk.Tk):
             cursize = int(self.pensize.get()/2)
             
             #newversion (editing img var)
-            self.picture['img']=modify_picture.modify_picture(self.picture['img'], (0,0,0), event.y, event.x, cursize, self.CanvaWidth, self.CanvaHeight)
+            self.picture['img']=modify_picture.modify_picture(self.picture['img'], (255,255,255), event.y, event.x, cursize, self.picture['width'], self.picture['height'])
             self.refresh()
         
             #create cursor
@@ -278,10 +290,6 @@ class Newpic(tk.Toplevel):
         self.title('New picture')
         self.resizable(False,False)
         
-        #Var
-        self.CanvaWidth=0
-        self.CanvaHeight=0
-        
         #Widgets
         self.WidthL = tk.Label(self,text="Width :")
         self.EntWidth = tk.Entry(self)
@@ -306,11 +314,11 @@ class Newpic(tk.Toplevel):
 
     #Func        
     def createCanva(self,event):
-        self.parent.CanvaWidth=self.EntWidth.get()
-        self.parent.CanvaHeight=self.EntHeight.get()
-        self.parent.canva["width"]=self.parent.CanvaWidth
-        self.parent.canva["height"]=self.parent.CanvaHeight
-        self.parent.picture={'height':self.parent.CanvaHeight,'width':self.parent.CanvaWidth,'img': Image.new('RGB',(self.parent.CanvaHeight, self.parent.CanvaHeight))} #<----------------------------last edit
+        self.parent.picture['width']=int(self.EntWidth.get())
+        self.parent.picture['height']=int(self.EntHeight.get())
+        self.parent.canva["width"]=self.parent.picture['width']
+        self.parent.canva["height"]=self.parent.picture['height']
+        self.parent.picture['img']= Image.new('RGB',(self.parent.picture['width'], self.parent.picture['height']),(255,255,255))
         #to replace by destroying the matrice in the future
         self.parent.canva.delete("all")
         self.destroy()
