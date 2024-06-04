@@ -1,9 +1,11 @@
 import tkinter as tk
 from tkinter import colorchooser, messagebox, filedialog
 from PIL import Image, ImageDraw, ImageTk, ImageGrab
+import cv2
+import matplotlib.pyplot as plt
 
 # Importer les fonctions de remplissage
-from remplissage import flood_fill
+from remplissage import flood_fill, colorie_pixels
 
 class PaintApp:
     def __init__(self, root):
@@ -82,6 +84,7 @@ class PaintApp:
     def perform_fill(self, event):
         # Récupérer les coordonnées du clic
         x, y = event.x, event.y
+        color = self.selected_color
         
         # Récupérer une capture d'écran du canevas
         x0 = self.canvas.winfo_rootx() + self.canvas.winfo_x()
@@ -94,10 +97,13 @@ class PaintApp:
         screenshot = screenshot.convert("RGB")
         
         # Appliquer l'outil de remplissage
-        filled_img = flood_fill(screenshot, x, y)
+        i = cv2.imread(screenshot)
+        edges = cv2.Canny(image=i, threshold1=100, threshold2=200)
+        liste_pixels_a_colorier = flood_fill(edges, x, y)
+        colorie_pixels(screenshot, liste_pixels_a_colorier, color)
         
         # Mettre à jour le canevas avec l'image modifiée
-        self.tk_image = ImageTk.PhotoImage(filled_img)
+        self.tk_image = ImageTk.PhotoImage(screenshot)
         self.canvas.create_image(0, 0, anchor="nw", image=self.tk_image)
         
 
