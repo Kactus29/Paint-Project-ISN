@@ -236,7 +236,7 @@ class Paint(tk.Tk):
             #create shape at cursor
             cursize = int(self.pensize.get()/2)
             
-            self.picture['img']=modify_picture.modify_picture(self.picture['img'], self.RGB, event.x, event.y, cursize, self.CanvaWidth, self.CanvaHeight)
+            self.picture['img']=modify_picture.modify_picture(self.picture['img'], self.RGB, event.y, event.x, cursize, self.CanvaWidth, self.CanvaHeight)
             self.refresh()
             
         
@@ -246,19 +246,8 @@ class Paint(tk.Tk):
             cursize = int(self.pensize.get()/2)
             
             #newversion (editing img var)
-            self.picture['img']=modify_picture.modify_picture(self.picture['img'], (0,0,0), event.x, event.y, cursize, self.CanvaWidth, self.CanvaHeight)
+            self.picture['img']=modify_picture.modify_picture(self.picture['img'], (0,0,0), event.y, event.x, cursize, self.CanvaWidth, self.CanvaHeight)
             self.refresh()
-
-            ## old :
-               
-            #delete all others shapes
-            #ids_square = self.canva.find_overlapping(event.x-int(3/4*cursize), event.y-int(3/4*cursize), event.x+int(3/4*cursize), event.y+int(3/4*cursize))
-            #ids_vertical = self.canva.find_overlapping(event.x-int(3/16*cursize), event.y-cursize, event.x+int(3/16*cursize), event.y+cursize)
-            #ids_horizontal = self.canva.find_overlapping(event.x-cursize, event.y-int(3/8*cursize), event.x+cursize, event.y+int(3/8*cursize))
-            #ids=tuple(set(ids_square + ids_vertical + ids_horizontal))
-
-            #for id in ids :
-            #    self.canva.delete(id)
         
             #create cursor
             self.cursor[f"id{self.cursorCount}"] =self.canva.create_oval(event.x-cursize, event.y-cursize,event.x+cursize,event.y+cursize,outline="black")
