@@ -3,6 +3,19 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
+def modify_fill(img, x : int, y : int, color : tuple) :
+    #img=cv2.cvtColor(np.array(img), cv2.COLOR_BGR2RGB) #convert PIL image to cv2 one
+    img = np.asarray(img)
+
+    edges = cv2.Canny(image=img, threshold1=100, threshold2=200)
+    pixToFill=flood_fill(edges,x,y)
+
+    img=Image.fromarray(img)
+
+    pixels = img.load()
+    colorie_pixels(pixels,pixToFill,color)
+
+    return img
 
 
 def flood_fill(edges : np.ndarray , x : int, y : int) -> list :
@@ -53,8 +66,8 @@ def colorie_pixels(image : np.ndarray, liste_pixels : list, couleur : list) :
     Output : Ne renvoie rien, modifie l'image directement
     """
 
-    for x,y in liste_pixels :
-        image[x][y] = couleur
+    for i,j in liste_pixels :
+        image[i,j] = couleur
     
 
 """

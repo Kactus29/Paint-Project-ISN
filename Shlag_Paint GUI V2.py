@@ -2,10 +2,12 @@ import tkinter as tk
 from tkinter import filedialog, colorchooser
 import numpy as np
 from PIL import Image, ImageTk
+import cv2
 
 import render_color
 import modify_picture
 import ascii_art
+import remplissage
 
 class Paint(tk.Tk):
     
@@ -106,6 +108,7 @@ class Paint(tk.Tk):
         
         self.canva.bind('<B3-Motion>',self.erase)
         self.canva.bind('<Button-3>',self.erase)
+        self.canva.bind('<Button-1>',self.fill)
         
         self.bind('<Configure>',self.resize)
         
@@ -275,8 +278,9 @@ class Paint(tk.Tk):
             self.actualtool="fill"
         
     def fill(self,event):
-        pass
-        self.refresh()
+        if self.actualtool=="fill":
+            self.picture['img'] = remplissage.modify_fill(self.picture['img'],event.x,event.y,self.color)
+            self.refresh()
 
         
 #=============================pop up=========================#
