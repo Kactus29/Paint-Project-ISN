@@ -251,7 +251,7 @@ class Paint(tk.Tk):
             #create shape at cursor
             cursize = int(self.pensize.get()/2)
             
-            self.picture['img']=modify_picture.modify_picture(self.picture['img'], self.color, event.y, event.x, cursize, self.picture['width'], self.picture['height'])
+            self.picture['img']=modify_picture.modify_picture(self.picture['img'], self.color, event.x, event.y, cursize, self.picture['width'], self.picture['height'])
             self.refresh()
             
         
@@ -261,7 +261,7 @@ class Paint(tk.Tk):
             cursize = int(self.pensize.get()/2)
             
             #newversion (editing img var)
-            self.picture['img']=modify_picture.modify_picture(self.picture['img'], (255,255,255), event.y, event.x, cursize, self.picture['width'], self.picture['height'])
+            self.picture['img']=modify_picture.modify_picture(self.picture['img'], (255,255,255), event.x, event.y, cursize, self.picture['width'], self.picture['height'])
             self.refresh()
         
             #create cursor

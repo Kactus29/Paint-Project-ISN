@@ -67,7 +67,7 @@ def colorie_pixels(image : np.ndarray, liste_pixels : list, couleur : list) :
     """
 
     for i,j in liste_pixels :
-        image[i,j] = couleur
+        image[j,i] = couleur
     
 
 """
