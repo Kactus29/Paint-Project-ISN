@@ -1,5 +1,4 @@
 # Dépendances 
-"""
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
@@ -8,7 +7,7 @@ import matplotlib.pyplot as plt
 
 def flood_fill(edges : np.ndarray , x : int, y : int) -> list :
     
-    
+    """
     Description : Prends en entrée une image edge detectionée et des coordonées initiales.
                   Renvoie une liste de tuples contenant les pixels à colorer
 
@@ -17,7 +16,7 @@ def flood_fill(edges : np.ndarray , x : int, y : int) -> list :
              - y (int) : La cordonée en x du point de départ
 
     Output : - liste_pixels_a_remplir (liste) : une liste des pixels qui doivent être remplis
-    
+    """
 
     liste_pixels_a_remplir = set()  # Pour stocker les pixels déjà remplis
     stack = [(x, y)]  # Pile pour le remplissage par diffusion
@@ -43,7 +42,7 @@ def flood_fill(edges : np.ndarray , x : int, y : int) -> list :
 
 def colorie_pixels(image : np.ndarray, liste_pixels : list, couleur : list) :
     
-    
+    """
     Description : Prends en entrée une image, la liste des pixels à colorier ainsi que la couleur.
                   Colorie les pixels de la liste des pixels de la couleur indiquée
 
@@ -52,12 +51,13 @@ def colorie_pixels(image : np.ndarray, liste_pixels : list, couleur : list) :
              - couleur (liste) : Une liste contenant le code rgb d'une couleur (ex : [120,205,117])
 
     Output : Ne renvoie rien, modifie l'image directement
-    
+    """
 
     for x,y in liste_pixels :
         image[x][y] = couleur
+    
 
-
+"""
 if __name__ == "__main__":
 
     image = cv2.imread('Test.png')
@@ -74,12 +74,11 @@ if __name__ == "__main__":
     plt.figure(figsize=(20,10))
     plt.imshow(image)
     plt.show()
-
 """
 
 from PIL import Image, ImageDraw
 
-def flood_fill(edges, x, y):
+def flood_fill_new(edges, x, y):
     """
     Description : Prend en entrée une image edge detectée et des coordonnées initiales.
                   Renvoie une image PIL avec le remplissage effectué.
