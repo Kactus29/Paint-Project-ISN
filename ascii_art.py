@@ -14,8 +14,10 @@ class AsciiArt(tk.Tk):
         self.create_widgets()
 
     def create_widgets(self):
+        self.text = tk.Label(self,text="Veuillez choisir le pourcentage de taille d'image à réduire")
+        self.text.pack()
         # Scale widget to select the size of the image by percentage
-        self.scale = tk.Scale(self, from_=1, to=100, orient="horizontal", variable=self.scale, label="Choissisez la taille d'image")
+        self.scale = tk.Scale(self, from_=1, to=100, orient="horizontal", variable=self.scale, label="Pourcentage")
         self.scale.pack(pady=20)
 
         # Open image file
