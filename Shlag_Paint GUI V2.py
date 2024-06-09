@@ -6,8 +6,8 @@ import cv2
 
 import render_color
 import modify_picture
-import ascii_art
 import remplissage
+from ascii_art import AsciiArt
 
 class Paint(tk.Tk):
     
@@ -166,8 +166,8 @@ class Paint(tk.Tk):
         self.picture['img']=Image.new('RGB',(self.picture['width'], self.picture['height']),(255,255,255))
         self.refresh()
 
-    def convertASCII(self, event):
-        pass
+    def convertASCII(self):
+        AsciiArt()
     
     #Color canva
     def selectcolor(self,event):

@@ -2,7 +2,7 @@ import tkinter as tk
 import tkinter.filedialog as fd
 import cv2   #pip install opencv-python 
 
-class App(tk.Tk):
+class AsciiArt(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("File Dialog")
@@ -72,8 +72,3 @@ class App(tk.Tk):
         #print(img)
         with open("ascii_art_new.txt", "w") as f:
             f.write(ascii_res)                          #on injecte le nouveau text dans un fichier txt pour le regarder.
-        
-
-if __name__ == "__main__":
-    app = App()
-    app.mainloop()
