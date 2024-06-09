@@ -87,7 +87,7 @@ if __name__ == "__main__":
     plt.figure(figsize=(20,10))
     plt.imshow(image)
     plt.show()
-"""
+    """
 
 from PIL import Image, ImageDraw
 

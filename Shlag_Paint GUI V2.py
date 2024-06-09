@@ -36,7 +36,7 @@ class Paint(tk.Tk):
         self.cursorCount = 0
         self.actualtool="pen"
         
-        self.picture={'height':420,'width':420,'img': Image.new('RGB',(420, 420),(255,255,255))} #<----------------------------last edit
+        self.picture={'height':420,'width':420,'img': Image.new('RGB',(420, 420),(255,255,255))} 
     
     #widget#
     def initwidget(self):
@@ -163,7 +163,8 @@ class Paint(tk.Tk):
             self.picture['img'].save(self.filename+".jpg")
     
     def clearcanva(self):
-        self.canva.delete("all")
+        self.picture['img']=Image.new('RGB',(self.picture['width'], self.picture['height']),(255,255,255))
+        self.refresh()
 
     def convertASCII(self, event):
         pass
@@ -238,8 +239,10 @@ class Paint(tk.Tk):
             pass
         
     def cursorquit(self,event):
-        self.canva.delete(self.cursor[f"id{self.cursorCount-1}"])
-        self.cursorCount=0
+        try :
+            self.canva.delete(self.cursor[f"id{self.cursorCount-1}"])
+            self.cursorCount=0
+        except : KeyError
         
     #Main canva ---> pen
     def pentool(self,event):
