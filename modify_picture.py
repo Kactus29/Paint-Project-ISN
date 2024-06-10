@@ -95,7 +95,7 @@ def modify_picture(img,color,x,y,pensize,canvawidth,canvaheight):
             
             #replace color if in range
             if dist_from_center < pensize or x==j and y==i:
-                pixels[i,j]=color
+                pixels[j,i]=color
             
     return img
                 

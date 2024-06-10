@@ -1,8 +1,9 @@
 import tkinter as tk
 import tkinter.filedialog as fd
 import cv2   #pip install opencv-python 
+from Afficheasciiart import AfficherAsciiArt
 
-class App(tk.Tk):
+class AsciiArt(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("File Dialog")
@@ -13,8 +14,10 @@ class App(tk.Tk):
         self.create_widgets()
 
     def create_widgets(self):
+        self.text = tk.Label(self,text="Veuillez choisir le pourcentage de taille d'image à réduire")
+        self.text.pack()
         # Scale widget to select the size of the image by percentage
-        self.scale = tk.Scale(self, from_=1, to=100, orient="horizontal", variable=self.scale, label="Choose the Image Size")
+        self.scale = tk.Scale(self, from_=1, to=100, orient="horizontal", variable=self.scale, label="Pourcentage")
         self.scale.pack(pady=20)
 
         # Open image file
@@ -72,8 +75,5 @@ class App(tk.Tk):
         #print(img)
         with open("ascii_art_new.txt", "w") as f:
             f.write(ascii_res)                          #on injecte le nouveau text dans un fichier txt pour le regarder.
-        
 
-if __name__ == "__main__":
-    app = App()
-    app.mainloop()
+        AfficherAsciiArt()

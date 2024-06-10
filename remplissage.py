@@ -67,7 +67,7 @@ def colorie_pixels(image : np.ndarray, liste_pixels : list, couleur : list) :
     """
 
     for i,j in liste_pixels :
-        image[i,j] = couleur
+        image[j,i] = couleur
     
 
 """
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     plt.figure(figsize=(20,10))
     plt.imshow(image)
     plt.show()
-"""
+    """
 
 from PIL import Image, ImageDraw
 

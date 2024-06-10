@@ -6,8 +6,8 @@ import cv2
 
 import render_color
 import modify_picture
-import ascii_art
 import remplissage
+from ascii_art import AsciiArt
 
 class Paint(tk.Tk):
     
@@ -36,7 +36,7 @@ class Paint(tk.Tk):
         self.cursorCount = 0
         self.actualtool="pen"
         
-        self.picture={'height':420,'width':420,'img': Image.new('RGB',(420, 420),(255,255,255))} #<----------------------------last edit
+        self.picture={'height':420,'width':420,'img': Image.new('RGB',(420, 420),(255,255,255))} 
     
     #widget#
     def initwidget(self):
@@ -163,10 +163,11 @@ class Paint(tk.Tk):
             self.picture['img'].save(self.filename+".jpg")
     
     def clearcanva(self):
-        self.canva.delete("all")
+        self.picture['img']=Image.new('RGB',(self.picture['width'], self.picture['height']),(255,255,255))
+        self.refresh()
 
-    def convertASCII(self, event):
-        pass
+    def convertASCII(self):
+        AsciiArt()
     
     #Color canva
     def selectcolor(self,event):
@@ -238,8 +239,10 @@ class Paint(tk.Tk):
             pass
         
     def cursorquit(self,event):
-        self.canva.delete(self.cursor[f"id{self.cursorCount-1}"])
-        self.cursorCount=0
+        try :
+            self.canva.delete(self.cursor[f"id{self.cursorCount-1}"])
+            self.cursorCount=0
+        except : KeyError
         
     #Main canva ---> pen
     def pentool(self,event):
@@ -251,7 +254,7 @@ class Paint(tk.Tk):
             #create shape at cursor
             cursize = int(self.pensize.get()/2)
             
-            self.picture['img']=modify_picture.modify_picture(self.picture['img'], self.color, event.y, event.x, cursize, self.picture['width'], self.picture['height'])
+            self.picture['img']=modify_picture.modify_picture(self.picture['img'], self.color, event.x, event.y, cursize, self.picture['width'], self.picture['height'])
             self.refresh()
             
         
@@ -261,7 +264,7 @@ class Paint(tk.Tk):
             cursize = int(self.pensize.get()/2)
             
             #newversion (editing img var)
-            self.picture['img']=modify_picture.modify_picture(self.picture['img'], (255,255,255), event.y, event.x, cursize, self.picture['width'], self.picture['height'])
+            self.picture['img']=modify_picture.modify_picture(self.picture['img'], (255,255,255), event.x, event.y, cursize, self.picture['width'], self.picture['height'])
             self.refresh()
         
             #create cursor
