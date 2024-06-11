@@ -56,8 +56,8 @@ class Paint(tk.Tk):
         menubar.add_cascade(label="File", menu=options)
 
         editMenu = tk.Menu(menubar, tearoff = 0)
-        editMenu.add_command(label="Undo")
-        editMenu.add_command(label="Redo")
+        editMenu.add_command(label="Undo", command=self.undo_command)
+        editMenu.add_command(label="Redo", command=self.redo_command)
         editMenu.add_command(label="Clear", command=self.clearcanva)
         editMenu.add_separator()
         editMenu.add_command(label="Convert ASCII into art", command=self.convertASCII)
@@ -294,21 +294,10 @@ class Paint(tk.Tk):
             self.picture['img'] = remplissage.modify_fill(self.picture['img'],event.x,event.y,self.color)
             self.refresh()
 
-    # def add_to_old_draw(self, event):
-    #     if self.actualtool=="pen":
-    #         self.old_draw.append(self.picture['img'].copy())
-
-    #         #create shape at cursor
-    #         cursize = int(self.pensize.get()/2)
-            
-    #         self.picture['img']=modify_picture.modify_picture(self.picture['img'], self.color, event.x, event.y, cursize, self.picture['width'], self.picture['height'])
-            
-    #         self.refresh()
-
-    #         # Clear the new_draw list
-    #         self.new_draw = []
-
     def undo(self, event):
+        self.undo_command()
+
+    def undo_command(self):
         if self.old_draw:
             # Append the popped image to the new_draw list
             img_append = self.picture['img'].copy()
@@ -319,6 +308,9 @@ class Paint(tk.Tk):
             self.refresh()
 
     def redo(self, event):
+        self.redo_command()
+
+    def redo_command(self):
         if self.new_draw:
             # Append the popped image to the old_draw list
             img_append = self.picture['img'].copy()
@@ -327,6 +319,8 @@ class Paint(tk.Tk):
             pop_img = self.new_draw.pop()
             self.picture['img'] = pop_img
             self.refresh()
+
+    
         
     def on_right_click(self, event):
         if self.actualtool=="pen":
