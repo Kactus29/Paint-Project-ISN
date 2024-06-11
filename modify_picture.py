@@ -25,52 +25,17 @@ def modify_picture(img,color,x,y,pensize,canvawidth,canvaheight):
     #pensize=int(pensize/2) #penradius
     
     # Simplier to understand version
-    """ 
+
     Xmin,Ymin,Xmax,Ymax=x-pensize,y-pensize,x+pensize,y+pensize
     if x-pensize<0:
         Xmin=0
     if y-pensize<0:
         Ymin=0
     if x+pensize>canvawidth:
-        Xmax=canvawidth
+        Xmax=canvawidth-1
     if y+pensize>canvaheight:
-        Ymax=canvaheight
-    """
-    
-    
-    # Optimizied version
-    if x-pensize<0:
-        if y-pensize<0:
-            if x+pensize>canvawidth:
-                if y+pensize>canvaheight: Xmin,Ymin,Xmax,Ymax=0,0,canvawidth,canvaheight #1111
-                else : Xmin,Ymin,Xmax,Ymax=0,0,canvawidth,y+pensize                     #1110
-            else : 
-                if y+pensize>canvaheight: Xmin,Ymin,Xmax,Ymax=0,0,x+pensize,canvaheight #1101
-                else : Xmin,Ymin,Xmax,Ymax=0,0,x+pensize,y+pensize                    #1100
-        else : 
-            if x+pensize>canvawidth: 
-                if y+pensize>canvaheight: Xmin,Ymin,Xmax,Ymax=0,y-pensize,canvawidth,canvaheight #1011
-                else : Xmin,Ymin,Xmax,Ymax=0,y-pensize,canvawidth,y+pensize                    #1010
-            else : 
-                if y+pensize>canvaheight: Xmin,Ymin,Xmax,Ymax=0,0,x+pensize,canvaheight #1001
-                else : Xmin,Ymin,Xmax,Ymax=0,0,x+pensize,y+pensize                    #1000
-    else :
-        if y-pensize<0:
-            if x+pensize>canvawidth:
-                if y+pensize>canvaheight: Xmin,Ymin,Xmax,Ymax=x-pensize,0,canvawidth,canvaheight #0111
-                else : Xmin,Ymin,Xmax,Ymax=x-pensize,0,canvawidth,y+pensize                    #0110
-            else : 
-                if y+pensize>canvaheight: Xmin,Ymin,Xmax,Ymax=x-pensize,0,x+pensize,canvaheight #0101
-                else : Xmin,Ymin,Xmax,Ymax=x-pensize,0,x+pensize,y+pensize                    #0100
-        else : 
-            if x+pensize>canvawidth:
-                if y+pensize>canvaheight: Xmin,Ymin,Xmax,Ymax=x-pensize,y-pensize,canvawidth,canvaheight #0011
-                else : Xmin,Ymin,Xmax,Ymax=x-pensize,y-pensize,canvawidth,y+pensize                     #0010
-            else : 
-                if y+pensize>canvaheight: Xmin,Ymin,Xmax,Ymax=x-pensize,y-pensize,x+pensize,canvaheight #0001
-                else : Xmin,Ymin,Xmax,Ymax=x-pensize,y-pensize,x+pensize,y+pensize                     #0000
+        Ymax=canvaheight-1
 
-    
     #===========modification of img object
 
     for i in range (Ymin,Ymax+1):
@@ -82,19 +47,19 @@ def modify_picture(img,color,x,y,pensize,canvawidth,canvaheight):
             else : 
                 if i > y :
                     if j > x :
-                        dist_from_center = sqrt((i-Ymin-pensize)**2+(j-Xmin-pensize)**2)
+                        dist_from_center = sqrt((i-y)**2+(j-x)**2)
                     else :
-                        dist_from_center = sqrt((i-Ymin-pensize)**2+(pensize-(j-Xmin))**2)
+                        dist_from_center = sqrt((i-y)**2+(x-j)**2)
                 else :
                     if j > x :
-                        dist_from_center = sqrt((pensize-(i-Ymin))**2+(j-Xmin-pensize)**2)
+                        dist_from_center = sqrt((y-i)**2+(j-x)**2)
                     else :
-                        dist_from_center = sqrt((pensize-(i-Ymin))**2+(pensize-(j-Xmin))**2)
-            
+                        dist_from_center = sqrt((y-i)**2+(x-j)**2)            
             
             #replace color if in range
             if dist_from_center < pensize or x==j and y==i:
-                pixels[j,i]=color
+                try : pixels[j,i]=color
+                except IndexError : pass
             
     return img
                 
