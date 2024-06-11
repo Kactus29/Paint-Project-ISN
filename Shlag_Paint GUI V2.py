@@ -22,6 +22,9 @@ class Paint(tk.Tk):
         
         self.width=730
         self.height=560
+
+        self.old_draw = []
+        self.new_draw = []
         
         self.initvar()
         self.initwidget()
@@ -36,7 +39,7 @@ class Paint(tk.Tk):
         self.cursorCount = 0
         self.actualtool="pen"
         
-        self.picture={'height':420,'width':420,'img': Image.new('RGB',(420, 420),(255,255,255))} 
+        self.picture={'height':420,'width':420,'img': Image.new('RGB',(420, 420),(255,255,255))}
     
     #widget#
     def initwidget(self):
@@ -103,12 +106,21 @@ class Paint(tk.Tk):
         
         self.canva.bind('<Motion>',self.cursormove) #The mouse is moved, with mouse button 1 being held down (use B2 for the middle button, B3 for the right button).
         self.canva.bind('<Leave>',self.cursorquit) #The mouse pointer left the widget.
+        self.canva.bind('<Button-1>',self.onclick) #The left mouse button is pressed (use Button-2 for the middle button, Button-3 for the right button
         self.canva.bind('<B1-Motion>',self.trace)
-        self.canva.bind('<Button-1>',self.trace)
+        
+
+        # When the left mouse button is released
+        # self.canva.bind('<ButtonRelease-1>',self.add_to_old_draw)
         
         self.canva.bind('<B3-Motion>',self.erase)
-        self.canva.bind('<Button-3>',self.erase)
-        self.canva.bind('<Button-1>',self.fill)
+        self.canva.bind('<Button-3>',self.on_right_click)
+        # self.canva.bind('<Button-1>',self.fill)
+
+        # Control + z
+        self.bind("<Control-z>", self.undo)
+        # Control + y
+        self.bind("<Control-y>", self.redo)
         
         self.bind('<Configure>',self.resize)
         
@@ -140,7 +152,7 @@ class Paint(tk.Tk):
         newpic.grab_set()
 
     def loadpic(self):
-        self.filename=filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("jpg files","*.jpg"),("png files","*.png"),("all files","*.*")))
+        self.filename=filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("jpg files",".jpg"),("png files",".png"),("all files",".")))
         self.picture['img']= Image.open(self.filename)
 
         self.picture['width'], self.picture['height'] = self.picture['img'].size
@@ -152,19 +164,25 @@ class Paint(tk.Tk):
         self.refresh()
 
     def savepicas(self):
-        self.filename=filedialog.asksaveasfilename(initialdir = "/",title = "Select folder",filetypes = (("jpg files","*.jpg"),("all files","*.*")))
+        self.filename=filedialog.asksaveasfilename(initialdir = "/",title = "Select folder",filetypes = (("jpg files",".jpg"),("all files",".*")))
         self.picture['img'].save(self.filename+".jpg")
 
     def savepic(self):
         try :
             self.picture['img'].save(self.filename+".jpg")
         except : 
-            self.filename=filedialog.asksaveasfilename(initialdir = "/",title = "Select folder",filetypes = (("jpg files","*.jpg"),("all files","*.*")))
+            self.filename=filedialog.asksaveasfilename(initialdir = "/",title = "Select folder",filetypes = (("jpg files",".jpg"),("all files",".*")))
             self.picture['img'].save(self.filename+".jpg")
     
     def clearcanva(self):
+        # Add the current image to the old_draw list
+        self.old_draw.append(self.picture['img'].copy())
+
         self.picture['img']=Image.new('RGB',(self.picture['width'], self.picture['height']),(255,255,255))
         self.refresh()
+
+        # Clear the new_draw list
+        self.new_draw = []
 
     def convertASCII(self):
         AsciiArt()
@@ -255,9 +273,77 @@ class Paint(tk.Tk):
             cursize = int(self.pensize.get()/2)
             
             self.picture['img']=modify_picture.modify_picture(self.picture['img'], self.color, event.x, event.y, cursize, self.picture['width'], self.picture['height'])
-            self.refresh()
             
+            self.refresh()
+
+    def onclick(self,event):
+        self.old_draw.append(self.picture['img'].copy())
+
+        if self.actualtool=="pen":
+            #create shape at cursor
+            cursize = int(self.pensize.get()/2)
+            
+            self.picture['img']=modify_picture.modify_picture(self.picture['img'], self.color, event.x, event.y, cursize, self.picture['width'], self.picture['height'])
+            
+            self.refresh()
+
+            # Clear the new_draw list
+            self.new_draw = []
+
+        if self.actualtool=="fill":
+            self.picture['img'] = remplissage.modify_fill(self.picture['img'],event.x,event.y,self.color)
+            self.refresh()
+
+    # def add_to_old_draw(self, event):
+    #     if self.actualtool=="pen":
+    #         self.old_draw.append(self.picture['img'].copy())
+
+    #         #create shape at cursor
+    #         cursize = int(self.pensize.get()/2)
+            
+    #         self.picture['img']=modify_picture.modify_picture(self.picture['img'], self.color, event.x, event.y, cursize, self.picture['width'], self.picture['height'])
+            
+    #         self.refresh()
+
+    #         # Clear the new_draw list
+    #         self.new_draw = []
+
+    def undo(self, event):
+        if self.old_draw:
+            # Append the popped image to the new_draw list
+            img_append = self.picture['img'].copy()
+            self.new_draw.append(img_append)
+
+            pop_img = self.old_draw.pop()
+            self.picture['img'] = pop_img
+            self.refresh()
+
+    def redo(self, event):
+        if self.new_draw:
+            # Append the popped image to the old_draw list
+            img_append = self.picture['img'].copy()
+            self.old_draw.append(img_append)
+
+            pop_img = self.new_draw.pop()
+            self.picture['img'] = pop_img
+            self.refresh()
         
+    def on_right_click(self, event):
+        if self.actualtool=="pen":
+            self.old_draw.append(self.picture['img'].copy())
+            cursize = int(self.pensize.get()/2)
+            
+            #newversion (editing img var)
+            self.picture['img']=modify_picture.modify_picture(self.picture['img'], (255,255,255), event.x, event.y, cursize, self.picture['width'], self.picture['height'])
+            self.refresh()
+        
+            #create cursor
+            self.cursor[f"id{self.cursorCount}"] =self.canva.create_oval(event.x-cursize, event.y-cursize,event.x+cursize,event.y+cursize,outline="black")
+            
+            #remove old cursor
+            try : self.canva.delete(self.cursor[f"id{self.cursorCount-1}"])
+            except : KeyError
+            self.cursorCount+=1
         
     def erase(self,event):
         if self.actualtool=="pen":
@@ -280,10 +366,10 @@ class Paint(tk.Tk):
         if self.actualtool!="fill":
             self.actualtool="fill"
         
-    def fill(self,event):
-        if self.actualtool=="fill":
-            self.picture['img'] = remplissage.modify_fill(self.picture['img'],event.x,event.y,self.color)
-            self.refresh()
+    # def fill(self,event):
+    #     if self.actualtool=="fill":
+    #         self.picture['img'] = remplissage.modify_fill(self.picture['img'],event.x,event.y,self.color)
+    #         self.refresh()
 
         
 #=============================pop up=========================#

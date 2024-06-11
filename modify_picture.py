@@ -19,7 +19,6 @@ def modify_picture(img,color,x,y,pensize,canvawidth,canvaheight):
     return: img modified (array)
     """
     pixels = img.load()
-    
     canvaheight=int(canvaheight)
     canvawidth=int(canvawidth)
     #==========setting up boundaries
