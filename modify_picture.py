@@ -9,11 +9,11 @@ def modify_picture(img,color,x,y,pensize,canvawidth,canvaheight):
     """
     Parameters
     ----------
-    img:2D array filled with RGB tuples
+    img: 2D array filled with RGB tuples
     color : tuple (R,G,B)
-    x:0-canvawidth
-    y:0-canvaheight
-    pensize:int
+    x: 0-canvawidth
+    y: 0-canvaheight
+    pensize: int
     
     ----------
     return: img modified (array)
@@ -23,8 +23,6 @@ def modify_picture(img,color,x,y,pensize,canvawidth,canvaheight):
     canvawidth=int(canvawidth)
     #==========setting up boundaries
     #pensize=int(pensize/2) #penradius
-    
-    # Simplier to understand version
 
     Xmin,Ymin,Xmax,Ymax=x-pensize,y-pensize,x+pensize,y+pensize
     if x-pensize<0:

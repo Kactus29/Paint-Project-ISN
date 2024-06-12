@@ -36,18 +36,19 @@ class Paint(tk.Tk):
     def initvar(self):
         self.quillsize=tk.DoubleVar()
         self.color=(0,0,0)
+
         self.cursor={}
         self.cursorCount = 0
+
         self.actualtool="quill"
         self.icons={}
-        
-        self.picture={'height':420,'width':420,'img': Image.new('RGB',(420, 420),(255,255,255))}
-    
-        # Curseurs
         self.custom_cursors = {
             'quill' : 'pencil',
             'fill' : 'spraycan'
-        }
+            }
+        
+        self.picture={'height':420,'width':420,'img': Image.new('RGB',(420, 420),(255,255,255))}
+        
 
     #widget#
     def initwidget(self):
@@ -109,16 +110,15 @@ class Paint(tk.Tk):
         
         self.canva.bind('<Motion>',self.cursormove) #The mouse is moved, with mouse button 1 being held down (use B2 for the middle button, B3 for the right button).
         self.canva.bind('<Leave>',self.cursorquit) #The mouse pointer left the widget.
-        self.canva.bind('<Button-1>',self.onclick) #The left mouse button is pressed (use Button-2 for the middle button, Button-3 for the right button
-        self.canva.bind('<B1-Motion>',self.trace)
+        self.canva.bind('<Button-1>',self.onLeftClick) #The left mouse button is pressed (use Button-2 for the middle button, Button-3 for the right button
+        self.canva.bind('<B1-Motion>',self.onLeftClick)
         
 
         # When the left mouse button is released
         # self.canva.bind('<ButtonRelease-1>',self.add_to_old_draw)
         
-        self.canva.bind('<B3-Motion>',self.erase)
-        self.canva.bind('<Button-3>',self.on_right_click)
-        # self.canva.bind('<Button-1>',self.fill)
+        self.canva.bind('<B3-Motion>',self.onRightClick)
+        self.canva.bind('<Button-3>',self.onRightClick)
 
         # Control + z
         self.bind("<Control-z>", self.undo)
@@ -134,31 +134,24 @@ class Paint(tk.Tk):
     
     #======================Bind Init func=========================#
 
-    #Main window
+    #<<<<<<<Main window>>>>>>>
     def resize(self,event):
+        """resize main window"""
         if event.widget == self:
             width=self.winfo_width() -310
             height=self.winfo_height() -140
-            """
-            resizable canva :
-            if self.width != width or self.height!=height :
-                if width >= height :
-                    self.canva["width"]=height
-                    self.canva["height"]=height
-                else :
-                    self.canva["width"]=width
-                    self.canva["height"]=width
-            """
                       
             self.width = width
             self.height = height
     
-    #Menu widget
+    #<<<<<<<Menu widget>>>>>>>
     def newpic(self):
+        """create new ^picture with custom  size"""
         newpic = Newpic(self)
         newpic.grab_set()
 
     def loadpic(self):
+        """load custom picture from folder"""
         self.filename=filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("jpg files",".jpg"),("png files",".png"),("all files",".")))
         self.picture['img']= Image.open(self.filename)
 
@@ -171,10 +164,12 @@ class Paint(tk.Tk):
         self.refresh()
 
     def savepicas(self):
+        """save actual picture under custom name/folder"""
         self.filename=filedialog.asksaveasfilename(initialdir = "/",title = "Select folder",filetypes = (("jpg files",".jpg"),("all files",".*")))
         self.picture['img'].save(self.filename+".jpg")
 
     def savepic(self):
+        """save picture under same name if already saved / opened"""
         try :
             self.picture['img'].save(self.filename+".jpg")
         except : 
@@ -182,7 +177,7 @@ class Paint(tk.Tk):
             self.picture['img'].save(self.filename+".jpg")
     
     def clearcanva(self):
-        # Add the current image to the old_draw list
+        """clear image"""
         self.old_draw.append(self.picture['img'].copy())
 
         self.picture['img']=Image.new('RGB',(self.picture['width'], self.picture['height']),(255,255,255))
@@ -192,17 +187,20 @@ class Paint(tk.Tk):
         self.new_draw = []
 
     def convertASCII(self):
+        """convert actual image / custom image into ASCII art"""
         AsciiArt()
     
-    #Color canva
+    #<<<<<<<Color palette>>>>>>>
     def selectcolor(self,event):
+        """open color palette selection"""
         color = colorchooser.askcolor()[1]  # Retourne un tuple (couleur sélectionnée, code hexadécimal)
         if color:
             self.color = utility.HexToDec(color)
             self.colorL["text"]= color
         
-    #Main canva
+    #<<<<<<<Main canva>>>>>>>
     def refresh(self):
+        """diplay new image into canva after modification"""
         img_tk=ImageTk.PhotoImage(self.picture['img'])
         x=int(self.picture['width']/2)
         y=int(self.picture['height']/2)
@@ -210,8 +208,8 @@ class Paint(tk.Tk):
         self.canva.create_image(x,y,image=img_tk)
         self.canva.image=img_tk
 
-
     def cursormove(self,event):
+        """add circle making cursor size visible when quill tool enabled"""
         if self.actualtool=="quill":
             cursize = int(self.quillsize.get()/2)
             #create cursor
@@ -225,73 +223,48 @@ class Paint(tk.Tk):
             pass
         
     def cursorquit(self,event):
+        """delete circle cursor and its history when quitting the canva"""
         try :
             self.canva.delete(self.cursor[f"id{self.cursorCount-1}"])
             self.cursorCount=0
         except : KeyError
         
-    #Main canva ---> quill
     def quilltool(self,event):
+        """enable quill tool when clicking on quill button"""
         if self.actualtool!="quill":
             self.actualtool="quill"
             self.canva.config(cursor=self.custom_cursors['quill'])
-    
-    def trace(self, event): 
-        if self.actualtool=="quill":
-            #create shape at cursor
-            cursize = int(self.quillsize.get()/2)
-            
-            self.picture['img']=modify_picture.modify_picture(self.picture['img'], self.color, event.x, event.y, cursize, self.picture['width'], self.picture['height'])
-            
-            self.refresh()
 
-    def onclick(self,event):
+    def filltool(self, event):
+        """enable fill tool when clicking on fill button"""
+        if self.actualtool!="fill":
+            self.actualtool="fill"
+            self.canva.config(cursor=self.custom_cursors['fill'])
+
+    def onLeftClick(self,event):
+        """trace / fill into canva depeding of actual tool enabled"""
+
         self.old_draw.append(self.picture['img'].copy())
 
+        #Main canva ---> quill
         if self.actualtool=="quill":
             #create shape at cursor
             cursize = int(self.quillsize.get()/2)
-            
             self.picture['img']=modify_picture.modify_picture(self.picture['img'], self.color, event.x, event.y, cursize, self.picture['width'], self.picture['height'])
-            
             self.refresh()
 
             # Clear the new_draw list
             self.new_draw = []
 
+        #Main canva ---> fill
         if self.actualtool=="fill":
             self.picture['img'] = remplissage.modify_fill(self.picture['img'],event.x,event.y,self.color)
             self.refresh()
+   
+    def onRightClick(self, event):
+        """erase in canva if quill tool enabled"""
 
-    def undo(self, event):
-        self.undo_command()
-
-    def undo_command(self):
-        if self.old_draw:
-            # Append the popped image to the new_draw list
-            img_append = self.picture['img'].copy()
-            self.new_draw.append(img_append)
-
-            pop_img = self.old_draw.pop()
-            self.picture['img'] = pop_img
-            self.refresh()
-
-    def redo(self, event):
-        self.redo_command()
-
-    def redo_command(self):
-        if self.new_draw:
-            # Append the popped image to the old_draw list
-            img_append = self.picture['img'].copy()
-            self.old_draw.append(img_append)
-
-            pop_img = self.new_draw.pop()
-            self.picture['img'] = pop_img
-            self.refresh()
-
-    
-        
-    def on_right_click(self, event):
+        #Main canva ---> erase
         if self.actualtool=="quill":
             self.old_draw.append(self.picture['img'].copy())
             cursize = int(self.quillsize.get()/2)
@@ -307,38 +280,43 @@ class Paint(tk.Tk):
             try : self.canva.delete(self.cursor[f"id{self.cursorCount-1}"])
             except : KeyError
             self.cursorCount+=1
-        
-    def erase(self,event):
-        if self.actualtool=="quill":
-            cursize = int(self.quillsize.get()/2)
-            
-            #newversion (editing img var)
-            self.picture['img']=modify_picture.modify_picture(self.picture['img'], (255,255,255), event.x, event.y, cursize, self.picture['width'], self.picture['height'])
+
+    #<<<<<<<Undo / Redo>>>>>>>
+    def undo(self, event):
+        """undo command for tkinter bind link"""
+        self.undo_command()
+
+    def undo_command(self):
+        """undo command for tkinter command= link"""
+        if self.old_draw:
+            # Append the popped image to the new_draw list
+            img_append = self.picture['img'].copy()
+            self.new_draw.append(img_append)
+
+            pop_img = self.old_draw.pop()
+            self.picture['img'] = pop_img
             self.refresh()
-        
-            #create cursor
-            self.cursor[f"id{self.cursorCount}"] =self.canva.create_oval(event.x-cursize, event.y-cursize,event.x+cursize,event.y+cursize,outline="black")
-            
-            #remove old cursor
-            try : self.canva.delete(self.cursor[f"id{self.cursorCount-1}"])
-            except : KeyError
-            self.cursorCount+=1
 
-    #Main canva ---> fill
-    def filltool(self, event):
-        if self.actualtool!="fill":
-            self.actualtool="fill"
-            self.canva.config(cursor=self.custom_cursors['fill'])
-        
-    # def fill(self,event):
-    #     if self.actualtool=="fill":
-    #         self.picture['img'] = remplissage.modify_fill(self.picture['img'],event.x,event.y,self.color)
-    #         self.refresh()
+    def redo(self, event):
+        """redo command for tkinter bind link"""
+        self.redo_command()
+
+    def redo_command(self):
+        """redo command for tkinter command= link"""
+        if self.new_draw:
+            # Append the popped image to the old_draw list
+            img_append = self.picture['img'].copy()
+            self.old_draw.append(img_append)
+
+            pop_img = self.new_draw.pop()
+            self.picture['img'] = pop_img
+            self.refresh()
 
         
-#=============================pop up=========================#
+#==========================pop up============================#
 
 class Newpic(tk.Toplevel):
+    """create a popup for creation of a new picture"""
     def __init__(self, parent):
         tk.Toplevel.__init__(self, parent)
         self.parent = parent
