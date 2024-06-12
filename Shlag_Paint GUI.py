@@ -140,6 +140,7 @@ class Paint(tk.Tk):
             width=self.winfo_width() -310
             height=self.winfo_height() -140
             """
+            resizable canva :
             if self.width != width or self.height!=height :
                 if width >= height :
                     self.canva["width"]=height
