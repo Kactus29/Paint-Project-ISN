@@ -54,12 +54,11 @@ Pour exécuter l'application localement, vous aurez besoin des outils suivants i
     ```bash
     python Shlag_Paint GUI.py
 
-
 ## Répartition des points
 
 | Hugo | Sylvain | Marine | Trung | Khai |
 |-----------|-----------|-----------|-----------|-----------|
-| 20 %   | 20 %   | 20 %   | 20 %   | 20 %   |
+| 20 %   | 25 %   | 15 %   | 20 %   | 20 %   |
 
 ## Explication des algorithmes non triviaux
 
