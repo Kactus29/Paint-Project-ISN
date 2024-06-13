@@ -68,7 +68,11 @@ Pour exécuter l'application localement, vous aurez besoin des outils suivants i
 
 2. **Conversion en ASCII :**
 
-    Insérer explication
+    La conversion en ASCII permet de transformer des images en art ASCII, un processus qui consiste à représenter une image à l'aide de caractères ASCII au lieu de pixels. Pour ce faire, nous avons récupéré une liste de 93 caractères sur Internet, classée selon l’intensité lumineuse croissante de chaque caractère. Liste disponible sur : https://stackoverflow.com/questions/30097953/ascii-art-sorting-an-array-of-ascii-characters-by-brightness-levels-c-c
+
+    La conversion des pixels en caractères ASCII est basée sur l'intensité lumineuse des pixels. Chaque pixel de l'image redimensionnée est parcouru, et son intensité moyenne est calculée - ici, il s’agit de la moyenne des 3 valeurs R, G, B. Cette intensité moyenne est ensuite comparée avec les caractères dans la liste de caractères ASCII, et le caractère ayant l’intensité lumineuse la plus proche de l’intensité moyenne est choisi pour représenter le pixel. Le caractère correspondant est ajouté à une chaîne de caractères représentant la ligne courante de l'image en ASCII. Cette chaîne de caractères est ensuite enregistrée dans un fichier texte créé.
+
+    Pour afficher ce fichier texte dans un canevas, nous avons d’abord construit un nouveau type de canevas dit "zoomable". Cela a pour but de s'adapter à la taille de l'image, qui est grande en comparaison avec la taille de l’écran d’ordinateur. Sinon, l’utilisateur peut également choisir de réduire la taille de leur image avant de la convertir en art ASCII. L’affichage du texte sur le canevas se fait par une boucle qui lit chaque caractère de chaque ligne et colonne dans le fichier texte. Pour la clarté de l'image "ASCII", un espacement de 10 pixels entre les caractères est défini durant l'affichage.   
 
 3. **Undo & Redo :**
 

@@ -1,6 +1,35 @@
 import tkinter as tk
 
 class ZoomableCanvas(tk.Canvas):
+    """
+    Classe ZoomableCanvas héritant de tk.Canvas pour créer une zone de dessin zoomable avec des barres de défilement.
+
+    Attributs
+    ----------
+    scale_factor : float
+        Facteur de zoom courant.
+    v_scrollbar : tk.Scrollbar
+        Barre de défilement verticale.
+    h_scrollbar : tk.Scrollbar
+        Barre de défilement horizontale.
+
+    Méthodes
+    ----------
+    __init__(master=None, **kwargs):
+        Initialise le canvas zoomable avec les barres de défilement.
+    
+    zoom(event):
+        Zoom avant ou arrière selon la direction de la molette de la souris.
+    
+    start_scroll(event):
+        Initialise le défilement en enregistrant la position de la souris.
+    
+    scroll(event):
+        Déplace la zone de dessin en fonction du mouvement de la souris.
+        
+    limit_scroll():
+        Limite le défilement aux bords du contenu du canvas.
+    """
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
 
@@ -23,6 +52,14 @@ class ZoomableCanvas(tk.Canvas):
 
 
     def zoom(self, event):
+        """
+        Zoom avant ou arrière en fonction de la direction de la molette de la souris.
+
+        Paramètres
+        ----------
+        event : tkinter.Event
+            Événement déclenché par la molette de la souris.
+        """
         # Get the coordinates of the mouse pointer
         x_center = self.canvasx(event.x)
         y_center = self.canvasy(event.y)
@@ -32,10 +69,6 @@ class ZoomableCanvas(tk.Canvas):
             zoom_scale = 1.1  # Increase scale by 50%
             self.scale_factor *= zoom_scale
         else:
-            # if self.scale_factor * 0.5 <= 1.0:
-            #     zoom_scale = 1.0 / self.scale_factor
-            #     self.scale_factor = 1.0
-            # else:
             zoom_scale = 0.9  # Decrease scale by 50%
             self.scale_factor *= zoom_scale
 
@@ -50,9 +83,11 @@ class ZoomableCanvas(tk.Canvas):
 
     def scroll(self, event):
         self.scan_dragto(event.x, event.y, gain=1)
-        # self.limit_scroll()
-
+        
     def limit_scroll(self):
+        """
+        Limiter le défilement aux bords du contenu du canvas.
+        """
         bbox = self.bbox("all")
         if bbox:
             x0, y0, x1, y1 = bbox
