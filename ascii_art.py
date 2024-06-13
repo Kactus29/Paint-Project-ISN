@@ -2,7 +2,6 @@ import tkinter as tk
 from ZoomableCanvas import ZoomableCanvas
 import tkinter.filedialog as fd
 import cv2   #pip install opencv-python 
-import shutil
 
 class AsciiArt(tk.Tk):
     def __init__(self):
