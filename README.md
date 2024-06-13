@@ -58,4 +58,11 @@ Pour exécuter l'application localement, vous aurez besoin des outils suivants i
 
 Les contributions sont les bienvenues ! Si vous souhaitez améliorer l'application Paint, veuillez ouvrir une issue pour discuter des changements proposés.
 
+## Répartition des points
+
+| Hugo | Sylvain | Marine | Trung | Khai |
+|-----------|-----------|-----------|-----------|-----------|
+| 20 %   | 20 %   | 20 %   | 20 %   | 20 %   |
+
+
 
