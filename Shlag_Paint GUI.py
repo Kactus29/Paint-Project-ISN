@@ -2,7 +2,8 @@ import tkinter as tk
 from tkinter import filedialog, colorchooser
 import numpy as np
 from PIL import Image, ImageTk
-import cv2
+import cv2 #pip install opencv-python 
+import shutil
 
 import render_color
 import utility
@@ -188,6 +189,7 @@ class Paint(tk.Tk):
 
     def convertASCII(self):
         """convert actual image / custom image into ASCII art"""
+        self.picture['img'].save('asciiart.jpg')
         AsciiArt()
     
     #<<<<<<<Color palette>>>>>>>

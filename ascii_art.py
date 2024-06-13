@@ -1,29 +1,38 @@
 import tkinter as tk
+from ZoomableCanvas import ZoomableCanvas
 import tkinter.filedialog as fd
 import cv2   #pip install opencv-python 
-from Afficheasciiart import AfficherAsciiArt
+import shutil
 
 class AsciiArt(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("File Dialog")
-        self.geometry("300x200")
+        self.title("Create an ASCII art")
+        self.geometry("300x210")
 
         self.scale = tk.IntVar()
 
         self.create_widgets()
 
+
     def create_widgets(self):
-        self.text = tk.Label(self,text="Veuillez choisir le pourcentage de taille d'image à réduire")
+        self.text = tk.Label(self,text="Veuillez choisir le pourcentage de réduction \n de la taille de l'image")
+
         self.text.pack()
+        
         # Scale widget to select the size of the image by percentage
-        self.scale = tk.Scale(self, from_=1, to=100, orient="horizontal", variable=self.scale, label="Pourcentage")
+        self.scale = tk.Scale(self, from_=1, to=100, orient="horizontal", variable=self.scale, label="Pourcentage :")
         self.scale.pack(pady=20)
 
+        self.actualImgB = tk.Button(self, text="Actual Image", command=self.from_image)
+        self.actualImgB.pack(pady=5)
         # Open image file
         self.btn_open = tk.Button(self, text="Open Image", command=self.open_image)
-        self.btn_open.pack(pady=20)
+        self.btn_open.pack()
 
+
+    def from_image(self):
+        self.load_pixel('asciiart.jpg')
 
     def open_image(self):
         filetypes = (
@@ -44,6 +53,9 @@ class AsciiArt(tk.Tk):
 #quel caractère ayant l'intensité le plus proche à celle du pixel. Puis on "remplace" le pixel par le caractère correspondant. 
 
     def load_pixel(self, file_path):
+
+                
+
         pixel_ascii_map = " `^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$"
             #ici, la liste des caractères est déjà arrangée selon l'intensité croissante que représente le caractère 
             #donc on peut supposer que l'ordre de caractère dans la liste est aussi sa l'intensité (dans référence de la liste)
@@ -76,4 +88,75 @@ class AsciiArt(tk.Tk):
         with open("ascii_art_new.txt", "w") as f:
             f.write(ascii_res)                          #on injecte le nouveau text dans un fichier txt pour le regarder.
 
+        if self.scale.get()>60 :
+            result=tk.messagebox.askokcancel('Warning','A percentage higher than 60% can be source of lags due to image size. Are you sure you wanna continue with a that high percentage ?' \
+                                             ,icon ='warning')
+            if result:
+                self.show_ascii_art()
+        else : 
+            self.show_ascii_art()
+
+    def show_ascii_art(self):
+        self.destroy()
         AfficherAsciiArt()
+
+class AfficherAsciiArt(tk.Tk):
+
+    def __init__(self):
+        super().__init__()
+        self.title("ASCII Art Rendering")
+        # FULLSCREEN
+        #self.attributes("-fullscreen", True)
+        self.geometry("1200x1200")
+
+        srceen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+
+        # Bind escape key to exit the program
+        self.bind('<Escape>', self.exit_fullscreen)
+
+        #<<<<<Widgets>>>>>>
+        #Menu
+        menubar = tk.Menu(self)
+
+        options = tk.Menu(menubar, tearoff = 0)
+        options.add_command(label="Zoom-in",accelerator="SCROLL UP")
+        options.add_command(label="Zoom-out",accelerator="SCROLL DOWN")
+        options.add_separator()
+        options.add_command(label="Copy into clipboard",command=self.copytxt)
+        options.add_command(label="Save as",command=self.savetxtas)
+        options.add_separator()
+        options.add_command(label="Exit", command=self.destroy)
+        menubar.add_cascade(label="Options", menu=options)
+
+        self.config(menu = menubar)
+
+        self.txt=""
+        with open("ascii_art_new.txt", "r") as file:
+            for y, line in enumerate(file):
+                for x, char in enumerate(line):
+                    self.txt+=str(char)
+
+        #Canva
+        canvas = ZoomableCanvas(self, width=srceen_width, height=screen_height)
+        canvas.pack()
+
+        with open("ascii_art_new.txt", "r") as file:
+            for y, line in enumerate(file):
+                for x, char in enumerate(line):
+                    canvas.create_text(x*10, y*10, text=char)
+        
+        self.mainloop()
+
+        #==============Menu func===============
+    def exit_fullscreen(self,event):
+        self.destroy()
+
+    def copytxt(self):
+        self.clipboard_clear()
+        self.clipboard_append(self.txt)
+
+    def savetxtas(self):
+        file_path=fd.asksaveasfilename(initialdir = "/",title = "Select folder",filetypes = (("txt files",".txt"),("all files",".*"))) + ".txt"
+        with open(file_path, "w") as f:
+            f.write(self.txt)
