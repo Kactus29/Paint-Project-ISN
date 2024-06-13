@@ -6,7 +6,6 @@ import cv2 #pip install opencv-python
 
 import utility
 import modify_picture
-import remplissage
 from ascii_art import AsciiArt
 
 class Paint(tk.Tk):
