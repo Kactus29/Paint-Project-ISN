@@ -76,8 +76,11 @@ Pour exécuter l'application localement, vous aurez besoin des outils suivants i
 
 3. **Undo & Redo :**
 
-    Insérer explication
+    En général, les applications de dessin comme Paint utilisent le modèle de commande pour implémenter les fonctionnalités d’annulation  (Undo) et de rétablissement (Redo):
 
+    - Chaque action que vous effectuez dans l’application (comme dessiner une ligne ou remplir une zone avec de la couleur) est encapsulée dans un objet de commande. Cet objet de commande contient toutes les informations nécessaires pour effectuer l’action (par exemple, le type de forme, les coordonnées de début et de fin, la couleur, etc.) et pour l’annuler et chaque fois que vous effectuez une action, l’objet de commande correspondant est ajouté à une pile de commandes.
+    - Annuler (Undo) : Lorsque vous cliquez sur le bouton “Undo”, l’application retire la dernière commande de la pile et annule l’action correspondante. Cela est généralement réalisé en appelant une méthode undo() sur l’objet de commande, qui sait comment annuler l’action spécifique.
+    - Rétablir (Redo) : Si vous avez annulé une action et que vous voulez la rétablir, l’application peut simplement réexécuter la commande correspondante. Cela est généralement réalisé en appelant une méthode redo() sur l’objet de commande.
 
 ## Contribuer
 
