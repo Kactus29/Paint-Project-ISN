@@ -52,7 +52,7 @@ Pour exécuter l'application localement, vous aurez besoin des outils suivants i
 3. **Exécutez le fichier principal**
 
     ```bash
-    python main.py
+    python Shlag_Paint GUI.py
 
 ## Contribuer
 
