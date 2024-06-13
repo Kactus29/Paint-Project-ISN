@@ -5,7 +5,7 @@ def sqrt(x):
     return x**(1/2)
             
 
-def modify_picture(img,color,x,y,pensize,canvawidth,canvaheight):
+def modify_trace(img,color,x,y,pensize,canvawidth,canvaheight):
     """
     Parameters
     ----------
@@ -60,40 +60,68 @@ def modify_picture(img,color,x,y,pensize,canvawidth,canvaheight):
                 except IndexError : pass
             
     return img
-                
-"""
-#test function :
-xlen=300
-ylen=300
 
-img= Image.new('RGB', (xlen, ylen),(255,255,255))      
-  
-img = modify_picture(img, (128,0,128), 150,150, 50, xlen, ylen)
-img.save("test_image.png")
+def modify_fill(img, x, y, color):
+    """
+    Remplit une zone d'une image avec une nouvelle couleur en utilisant l'algorithme de remplissage par diffusion.
 
-import tkinter as tk
+    Parameters:
+    img (PIL.Image.Image): L'image à modifier.
+    x (int): La coordonnée x du point de départ pour le remplissage.
+    y (int): La coordonnée y du point de départ pour le remplissage.
+    color (tuple): La nouvelle couleur sous forme de tuple RGB (R, G, B).
 
-root = tk.Tk()
-root.geometry('600x600')
+    Returns:
+    PIL.Image.Image: L'image modifiée avec la zone remplie par la nouvelle couleur.
 
-canvas1 = tk.Canvas( root, width = 400, height = 400, bg="gray") 
-canvas1.pack() 
+    Example:
+    >>> from PIL import Image
+    >>> img = Image.open('path_to_image.png')
+    >>> new_img = modify_fill(img, 50, 50, (255, 0, 0))
+    >>> new_img.show()
+    """
 
+    # Récupère les dimensions de l'image
+    width, height = img.size
 
-def render_img(img,xlen=xlen,ylen=ylen):
-    for i in range(0,xlen+1):
-        print("[ ",end="")
-        for j in range(0,ylen+1):
-            for l in range(0,3):
-                print(f"{img[i][j][l]}",end="")
-            print(end=" |")
-        print(" ]")
-   
+    # Convertit la nouvelle couleur en tuple (au cas où ce ne serait pas déjà le cas)
+    new_color = tuple(color)
 
-# Display image 
-img_tk = ImageTk.PhotoImage(img)
-canvas1.create_image(150,150,image=img_tk)
-canvas1.image = img_tk
+    # Récupère la couleur originale à la position de départ (x, y)
+    original_color = img.getpixel((x, y))
 
-root.mainloop()
-"""
+    # Si la couleur originale est déjà la nouvelle couleur, ne fait rien
+    if original_color == new_color:
+        return img
+
+    # Convertit l'image en tableau numpy pour un accès rapide aux pixels
+    pixels = np.array(img)
+
+    # Initialise une pile avec le point de départ
+    stack = [(x, y)]
+    
+    # Boucle de remplissage par diffusion
+    while stack:
+        # Récupère les coordonnées actuelles de la pile
+        cx, cy = stack.pop()
+
+        # Vérifie si le pixel actuel correspond à la couleur originale
+        if np.array_equal(pixels[cy, cx][:3], original_color):
+            # Change la couleur du pixel actuel en la nouvelle couleur
+            pixels[cy, cx] = new_color
+            
+            # Ajoute les pixels adjacents à la pile pour vérification future
+            if cx > 0:
+                stack.append((cx - 1, cy))
+            if cx < width - 1:
+                stack.append((cx + 1, cy))
+            if cy > 0:
+                stack.append((cx, cy - 1))
+            if cy < height - 1:
+                stack.append((cx, cy + 1))
+    
+    # Crée une nouvelle image à partir du tableau numpy modifié
+    new_img = Image.fromarray(pixels)
+
+    # Retourne l'image modifiée
+    return new_img

@@ -5,7 +5,6 @@ from PIL import Image, ImageTk
 import cv2 #pip install opencv-python 
 import shutil
 
-import render_color
 import utility
 import modify_picture
 import remplissage
@@ -24,9 +23,6 @@ class Paint(tk.Tk):
         
         self.width=730
         self.height=560
-
-        self.old_draw = []
-        self.new_draw = []
         
         self.initvar()
         self.initwidget()
@@ -49,6 +45,9 @@ class Paint(tk.Tk):
             }
         
         self.picture={'height':420,'width':420,'img': Image.new('RGB',(420, 420),(255,255,255))}
+
+        self.old_draw = [self.picture['img'].copy()]
+        self.new_draw = []
         
 
     #widget#
@@ -113,6 +112,7 @@ class Paint(tk.Tk):
         self.canva.bind('<Leave>',self.cursorquit) #The mouse pointer left the widget.
         self.canva.bind('<Button-1>',self.onLeftClick) #The left mouse button is pressed (use Button-2 for the middle button, Button-3 for the right button
         self.canva.bind('<B1-Motion>',self.onLeftClick)
+        self.canva.bind('<ButtonRelease-1>',self.add_undo_log_command)
         
 
         # When the left mouse button is released
@@ -120,6 +120,7 @@ class Paint(tk.Tk):
         
         self.canva.bind('<B3-Motion>',self.onRightClick)
         self.canva.bind('<Button-3>',self.onRightClick)
+        self.canva.bind('<ButtonRelease-3>',self.add_undo_log_command)
 
         # Control + z
         self.bind("<Control-z>", self.undo)
@@ -179,9 +180,10 @@ class Paint(tk.Tk):
     
     def clearcanva(self):
         """clear image"""
-        self.old_draw.append(self.picture['img'].copy())
-
         self.picture['img']=Image.new('RGB',(self.picture['width'], self.picture['height']),(255,255,255))
+
+        self.add_undo_log()
+
         self.refresh()
 
         # Clear the new_draw list
@@ -246,21 +248,20 @@ class Paint(tk.Tk):
     def onLeftClick(self,event):
         """trace / fill into canva depeding of actual tool enabled"""
 
-        self.old_draw.append(self.picture['img'].copy())
+        # Clear the new_draw list
+        if len(self.new_draw)>0 : self.new_draw = []
 
         #Main canva ---> quill
         if self.actualtool=="quill":
             #create shape at cursor
             cursize = int(self.quillsize.get()/2)
-            self.picture['img']=modify_picture.modify_picture(self.picture['img'], self.color, event.x, event.y, cursize, self.picture['width'], self.picture['height'])
+            self.picture['img']=modify_picture.modify_trace(self.picture['img'], self.color, event.x, event.y, cursize, self.picture['width'], self.picture['height'])
             self.refresh()
 
-            # Clear the new_draw list
-            self.new_draw = []
 
         #Main canva ---> fill
         if self.actualtool=="fill":
-            self.picture['img'] = remplissage.modify_fill(self.picture['img'],event.x,event.y,self.color)
+            self.picture['img'] = modify_picture.modify_fill(self.picture['img'],event.x,event.y,self.color)
             self.refresh()
    
     def onRightClick(self, event):
@@ -268,11 +269,10 @@ class Paint(tk.Tk):
 
         #Main canva ---> erase
         if self.actualtool=="quill":
-            self.old_draw.append(self.picture['img'].copy())
             cursize = int(self.quillsize.get()/2)
             
             #newversion (editing img var)
-            self.picture['img']=modify_picture.modify_picture(self.picture['img'], (255,255,255), event.x, event.y, cursize, self.picture['width'], self.picture['height'])
+            self.picture['img']=modify_picture.modify_trace(self.picture['img'], (255,255,255), event.x, event.y, cursize, self.picture['width'], self.picture['height'])
             self.refresh()
         
             #create cursor
@@ -284,19 +284,24 @@ class Paint(tk.Tk):
             self.cursorCount+=1
 
     #<<<<<<<Undo / Redo>>>>>>>
+    def add_undo_log_command(self,command):
+        """add actual picture to picture logs, bind to command"""
+        self.add_undo_log()
+    
+    def add_undo_log(self):
+        """add actual picture to picture logs"""
+        self.old_draw.append(self.picture['img'].copy())
+
     def undo(self, event):
         """undo command for tkinter bind link"""
         self.undo_command()
 
     def undo_command(self):
         """undo command for tkinter command= link"""
-        if self.old_draw:
-            # Append the popped image to the new_draw list
-            img_append = self.picture['img'].copy()
-            self.new_draw.append(img_append)
+        if len(self.old_draw)>1:
+            self.new_draw.append(self.old_draw.pop(-1)) #add actual img to new_draw list
 
-            pop_img = self.old_draw.pop()
-            self.picture['img'] = pop_img
+            self.picture['img'] = self.old_draw[-1] #set actual image to previous one
             self.refresh()
 
     def redo(self, event):
@@ -305,13 +310,11 @@ class Paint(tk.Tk):
 
     def redo_command(self):
         """redo command for tkinter command= link"""
-        if self.new_draw:
+        if len(self.new_draw)>0:
             # Append the popped image to the old_draw list
-            img_append = self.picture['img'].copy()
-            self.old_draw.append(img_append)
+            self.picture['img'] = self.new_draw.pop(-1) #set actual image to previous one
+            self.old_draw.append(self.picture['img'].copy()) #add previous image to old_draw list
 
-            pop_img = self.new_draw.pop()
-            self.picture['img'] = pop_img
             self.refresh()
 
         
