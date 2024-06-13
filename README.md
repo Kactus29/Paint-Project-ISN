@@ -14,9 +14,18 @@ Paint Application est une application de dessin simple développée en Python à
 - **Redimensionnement de l'image** : Faites glisser la poignée dans le coin inférieur droit pour redimensionner l'image.
 - **Undo/Redo** : Utilisez `Edit -> Undo` et `Edit -> Redo` ou les raccourcis clavier `Ctrl+Z` et `Ctrl+Y` pour annuler et rétablir les actions de dessin.
 
-## Capture d'écran
 
-![Capture d'écran de l'application Paint](Images/Screenshot.png)
+## Présentation visuelle du projet
+
+1. **Capture d'écran :**
+
+    ![Capture d'écran de l'application Paint](Images/Screenshot.png)
+
+2. **Vidéo de présentation :**
+
+    ```bash
+    insérer le lien vers la vidéo
+
 
 
 ## Prérequis
