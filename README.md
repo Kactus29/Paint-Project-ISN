@@ -54,9 +54,6 @@ Pour exécuter l'application localement, vous aurez besoin des outils suivants i
     ```bash
     python Shlag_Paint GUI.py
 
-## Contribuer
-
-Les contributions sont les bienvenues ! Si vous souhaitez améliorer l'application Paint, veuillez ouvrir une issue pour discuter des changements proposés.
 
 ## Répartition des points
 
@@ -64,5 +61,21 @@ Les contributions sont les bienvenues ! Si vous souhaitez améliorer l'applicati
 |-----------|-----------|-----------|-----------|-----------|
 | 20 %   | 20 %   | 20 %   | 20 %   | 20 %   |
 
+## Explication des algorithmes non triviaux
+
+1. **Outil remplissage :**
+
+    L'outil de remplissage utilise une version spécialisée de l'algorithme "flood fill". Cet algorithme remplace une couleur spécifique sur le canevas par une autre couleur choisie par l'utilisateur. Lorsqu'on clique sur une zone du canevas avec l'outil de remplissage activé, l'algorithme détecte la couleur de la zone cliquée et remplace cette couleur, ainsi que toutes les zones adjacentes de la même couleur, par la nouvelle couleur sélectionnée. Ce processus se poursuit jusqu'à ce que toutes les zones connectées de la couleur d'origine soient remplies.
+
+2. **Conversion en ASCII :**
+
+    Insérer explication
+
+3. **Undo & Redo :**
+
+    Insérer explication
 
 
+## Contribuer
+
+Les contributions sont les bienvenues ! Si vous souhaitez améliorer l'application Paint, veuillez ouvrir une issue pour discuter des changements proposés.
