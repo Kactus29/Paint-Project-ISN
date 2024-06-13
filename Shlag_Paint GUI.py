@@ -73,13 +73,13 @@ class Paint(tk.Tk):
         self.config(menu = menubar)
         
         #quill tool
-        self.icons['quill'] = utility.load_icon('quill_icon.png')
+        self.icons['quill'] = utility.load_icon('Images/Icons/quill_icon.png')
         self.quillB=tk.Button(self,bg="lightgrey", width=25, height=25, image=self.icons['quill'])
         self.quillB.bind('<Button-1>',self.quilltool)
         self.quillB.place(x=10,y=20)
         
         #fill tool
-        self.icons['paint_can'] = utility.load_icon('paint_can_icon.png')
+        self.icons['paint_can'] = utility.load_icon('Images/Icons/paint_can_icon.png')
         self.fillB=tk.Button(self,bg="lightgrey", width=25, height=25, image=self.icons['paint_can'])
         self.fillB.bind('<Button-1>',self.filltool)
         self.fillB.place(x=60,y=20)
@@ -95,7 +95,7 @@ class Paint(tk.Tk):
         self.colorL = tk.Label(self,text='#000000',font=("Arial", 10))
         self.colorL.place(x=480,y=25)
         
-        self.icons['color_palette'] = utility.load_icon('color_palette_icon.png')
+        self.icons['color_palette'] = utility.load_icon('Images/Icons/color_palette_icon.png')
         self.colorB = tk.Button(self, bg="lightgrey", width=25, height=25, image=self.icons['color_palette'])
         self.colorB.bind('<Button-1>',self.selectcolor)
         self.colorB.place(x=440,y=20)
