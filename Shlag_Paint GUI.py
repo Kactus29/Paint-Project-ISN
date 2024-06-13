@@ -1,13 +1,11 @@
 import tkinter as tk
 from tkinter import filedialog, colorchooser
-import numpy as np
 from PIL import Image, ImageTk
 import cv2 #pip install opencv-python 
-import shutil
+
 
 import utility
 import modify_picture
-import remplissage
 from ascii_art import AsciiArt
 
 class Paint(tk.Tk):
@@ -105,8 +103,8 @@ class Paint(tk.Tk):
         #main canva
         self.canva=tk.Canvas(self,bg="white",width=self.picture['width'],height=self.picture['height'])
         
-        self.canva.create_image(self.picture['width'],self.picture['height'],image=ImageTk.PhotoImage(self.picture['img'])) #<----------------------------last edit
-        self.canva.image=ImageTk.PhotoImage(self.picture['img']) #<----------------------------last edit
+        self.canva.create_image(self.picture['width'],self.picture['height'],image=ImageTk.PhotoImage(self.picture['img'])) 
+        self.canva.image=ImageTk.PhotoImage(self.picture['img']) 
         
         self.canva.bind('<Motion>',self.cursormove) #The mouse is moved, with mouse button 1 being held down (use B2 for the middle button, B3 for the right button).
         self.canva.bind('<Leave>',self.cursorquit) #The mouse pointer left the widget.
