@@ -87,8 +87,8 @@ class AsciiArt(tk.Tk):
         with open("ascii_art_new.txt", "w") as f:
             f.write(ascii_res)                          #on injecte le nouveau text dans un fichier txt pour le regarder.
 
-        if self.scale.get()>60 :
-            result=tk.messagebox.askokcancel('Warning','A percentage higher than 60% can be source of lags due to image size. Are you sure you wanna continue with a that high percentage ?' \
+        if self.scale.get()>50 :
+            result=tk.messagebox.askokcancel('Warning','A percentage higher than 50% can be source of lags due to image size. Are you sure you wanna continue with a that high percentage ?' \
                                              ,icon ='warning')
             if result:
                 self.show_ascii_art()
