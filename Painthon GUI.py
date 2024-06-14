@@ -14,7 +14,7 @@ class Paint(tk.Tk):
     
     def __init__(self):
         super().__init__()
-        self.title("Le Paint du pauvre")
+        self.title("Painthon")
         self.resizable(True,True)
         self.minsize(530,400)
         self.geometry("730x560")
@@ -57,7 +57,7 @@ class Paint(tk.Tk):
         options.add_command(label="New",command=self.newpic)
         options.add_command(label="Load",command=self.loadpic)
         options.add_command(label="Save as",command=self.savepicas)
-        options.add_command(label="Save",command=self.savepic)
+        options.add_command(label="Save",accelerator="CTRL+S",command=self.savepic)
         options.add_separator()
         options.add_command(label="Exit", command=self.destroy)
         menubar.add_cascade(label="File", menu=options)
@@ -67,7 +67,7 @@ class Paint(tk.Tk):
         editMenu.add_command(label="Redo",accelerator="CTRL+Y", command=self.redo_command)
         editMenu.add_command(label="Clear", command=self.clearcanva)
         editMenu.add_separator()
-        editMenu.add_command(label="Convert ASCII into art", command=self.convertASCII)
+        editMenu.add_command(label="Convert into ASCII art", command=self.convertASCII)
         menubar.add_cascade(label="Edit", menu=editMenu)
         
         self.config(menu = menubar)
@@ -124,6 +124,8 @@ class Paint(tk.Tk):
         self.bind("<Control-z>", self.undo)
         # Control + y
         self.bind("<Control-y>", self.redo)
+        # Control + s
+        self.bind("<Control-s>", self.savepiccommand)
         
         self.bind('<Configure>',self.resize)
         
@@ -167,6 +169,10 @@ class Paint(tk.Tk):
         """save actual picture under custom name/folder"""
         self.filename=filedialog.asksaveasfilename(initialdir = "/",title = "Select folder",filetypes = (("jpg files",".jpg"),("all files",".*")))
         self.picture['img'].save(self.filename+".jpg")
+
+    def savepiccommand(seld,event):
+        """save command for tkinter bind link"""
+        self.savepic()
 
     def savepic(self):
         """save picture under same name if already saved / opened"""
