@@ -1,18 +1,16 @@
 # Paint Application
 
-Paint Application est une application de dessin simple développée en Python à l'aide de la bibliothèque Tkinter et Pillow pour la manipulation d'images.
+Paint Application est une application de dessin simple développée en Python à l'aide de la bibliothèque Tkinter.
 
 ## Fonctionnalités/Utilisation
 
 - **Nouvelle image** : Cliquez sur `File -> New` pour créer une nouvelle image avec des dimensions spécifiques.
 - **Charger une image** : Utilisez `File -> Load` pour charger une image à partir de votre système de fichiers.
-- **Sauvegarder une image sous** : Utilisez `File -> Save as` pour sauvegarder l'image actuelle sous un nouveau nom au format JPG.
 - **Sauvegarder une image** : Utilisez `File -> Save` ou le raccourci clavier `Ctrl+S` pour sauvegarder l'image actuelle sous le même nom, si elle a été ouverte ou déjà enregistrée.
 - **Outils de dessin** : Sélectionnez l'outil de dessin (`Quill` pour le pinceau ou la gomme, `Paint can` pour le remplissage) à partir de la barre d'outils.
 - **Sélection de couleur** : Choix de la couleur de dessin à l'aide d'une palette de couleurs.
 - **Réinitialisation du tableau** :  Utilisez `Edit -> Clear` pour obtenir un tableau de nouveau vierge
 - **Undo/Redo** : Utilisez `Edit -> Undo` et `Edit -> Redo` ou les raccourcis clavier `Ctrl+Z` et `Ctrl+Y` pour annuler et rétablir les actions de dessin.
-- **Redimensionnement de l'image** : Faites glisser la poignée dans le coin inférieur droit pour redimensionner l'image.
 - **Convert into ASCII art** : Accessible via `Edit -> Convert into ASCII art` pour convertir une l'image actuelle ou une image de votre répertoir en ASCII art, sauvegardable ou copiable dans votre presse papier.
 
 ## Présentation visuelle du projet
@@ -26,14 +24,11 @@ Paint Application est une application de dessin simple développée en Python à
     ```bash
     insérer le lien vers la vidéo
 
-
-
 ## Prérequis
 
-Pour exécuter l'application localement, vous aurez besoin des outils suivants installés sur votre machine :
+Pour exécuter l'application localement, vous aurez besoin des dépendances suivantes installées sur votre machine :
 
-- Python 3.x
-- Tkinter
+- Numpy
 - Pillow (PIL)
 - cv2 (opencv)
 
