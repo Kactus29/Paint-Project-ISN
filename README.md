@@ -22,7 +22,7 @@ Paint Application est une application de dessin simple développée en Python à
 2. **Vidéo de présentation :**
 
     ```bash
-    insérer le lien vers la vidéo
+    https://drive.google.com/file/d/1B7pXEvLP0t-VG7gDRf5i6WwZJooNRoBT/view?usp=drive_link
 
 ## Prérequis
 
